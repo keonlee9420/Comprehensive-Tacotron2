@@ -1,0 +1,39 @@
+encoder:
+  encoder_kernel_size: 5
+  encoder_n_convolutions: 3
+  encoder_embedding_dim: 512
+  symbols_embedding_dim: 512
+decoder:
+  n_frames_per_step: 2 # any of reduction factor is supported
+  decoder_rnn_dim: 1024
+  prenet_dim: 256
+  max_decoder_steps: 1000
+  gate_threshold: 0.5
+  p_attention_dropout: 0.1
+  p_decoder_dropout: 0.1
+attention:
+  attention_rnn_dim: 1024
+  attention_dim: 128
+location_layer:
+  attention_location_n_filters: 32
+  attention_location_kernel_size: 31
+postnet:
+  postnet_embedding_dim: 512
+  postnet_kernel_size: 5
+  postnet_n_convolutions: 5
+
+# gst:
+#   use_gst: False
+#   conv_filters: [32, 32, 64, 64, 128, 128]
+#   gru_hidden: 128
+#   token_size: 128
+#   n_style_token: 10
+#   attn_head: 4
+
+multi_speaker: False
+
+max_seq_len: 1000
+
+vocoder:
+  model: "HiFi-GAN" # support 'HiFi-GAN', 'MelGAN'
+  speaker: "LJSpeech" # support  'LJSpeech', 'universal'
