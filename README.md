@@ -1,9 +1,18 @@
 # Comprehensive Tacotron2 - PyTorch Implementation
 
-PyTorch Implementation of Google's [Natural TTS Synthesis by Conditioning WaveNet on Mel Spectrogram Predictions](https://arxiv.org/abs/1712.05884). Unlike many previous implementations, this is kind of a **`comprehensive Tacotron2`** where the model supports both single-, multi-speaker TTS and several techniques such as reduction factor to enforce the robustness of the decoder alignment.
+PyTorch Implementation of Google's [Natural TTS Synthesis by Conditioning WaveNet on Mel Spectrogram Predictions](https://arxiv.org/abs/1712.05884). Unlike many previous implementations, this is kind of a **`Comprehensive Tacotron2`** where the model supports both single-, multi-speaker TTS and several techniques such as reduction factor to enforce the robustness of the decoder alignment. The model can learn alignment only in `5k`.
 
 <p align="center">
     <img src="img/model.png" width="80%">
+</p>
+
+The validation logs up to 70K of synthesized mel and alignment are shown below (LJSpeech_val_LJ038-0050 and VCTK_val_p323_008 from top to bottom).
+
+<p align="center">
+    <img src="./img/LJSpeech_val_LJ038-0050.gif" width="80%">
+</p>
+<p align="center">
+    <img src="./img/VCTK_val_p323_008.gif" width="80%">
 </p>
 
 # Quickstart
@@ -82,7 +91,7 @@ to serve TensorBoard on your localhost.
 # Implementation Issues
 
 - Support `n_frames_per_step>1` mode (which is not supported by [NVIDIA's tacotron2](https://github.com/NVIDIA/tacotron2)). This is the key factor to get the robustness of the decoder alignment as described in the paper. Also, it reduces the training & inference time by the factor time.
-- The current implementation provides pre-trained model of `n_frames_per_step=2`, but it should also work for any number greater than 2.
+- The current implementation provides pre-trained model of `n_frames_per_step==2`, but it should also work for any number greater than 2.
 - Add [espnet's implementation](https://github.com/espnet/espnet/blob/e962a3c609ad535cd7fb9649f9f9e9e0a2a27291/espnet/nets/pytorch_backend/e2e_tts_tacotron2.py#L25) of [diagonal guided attention loss](https://arxiv.org/abs/1710.08969) to force diagonal alignment in the decoder attention module. You can toggle it by setting config.
 - Two options for embedding for the **multi-speaker TTS** setting: training speaker embedder from scratch or using a pre-trained [philipperemy's DeepSpeaker](https://github.com/philipperemy/deep-speaker) model (as [STYLER](https://github.com/keonlee9420/STYLER) did). You can toggle it by setting the config (between `'none'` and `'DeepSpeaker'`).
 - DeepSpeaker on VCTK dataset shows clear identification among speakers. The following figure shows the T-SNE plot of extracted speaker embedding.
