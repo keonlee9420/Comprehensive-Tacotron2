@@ -25,7 +25,7 @@ pip3 install -r requirements.txt
 
 ## Inference
 
-You have to download the [pretrained models]() and put them in `output/ckpt/LJSpeech/` or `output/ckpt/VCTK/`.
+You have to download the [pretrained models](https://drive.google.com/drive/folders/1fGhmSVnUzdS_8i_-7cX6pfaSIQ0oiYBM?usp=sharing) and put them in `output/ckpt/LJSpeech/` or `output/ckpt/VCTK/`.
 
 For a **single-speaker TTS**, run
 ```
