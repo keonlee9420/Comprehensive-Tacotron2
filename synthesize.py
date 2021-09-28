@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from utils.model import get_model, get_vocoder
 from utils.tools import get_configs_of, to_device, infer_one_sample #, read_lexicon
 from dataset import TextDataset
-from text import text_to_sequence
+from text import text_to_sequence, sequence_to_text
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -23,7 +23,8 @@ def preprocess_english(text, preprocess_config):
         text, preprocess_config["preprocessing"]["text"]["text_cleaners"]
     )
     print("Raw Text Sequence: {}".format(text))
-    print("Phoneme ID Sequence: {}".format(" ".join([str(id) for id in sequence])))
+    print("Sequence: {}".format(" ".join([str(id) for id in sequence_to_text(sequence)])))
+    print("Sequence Input: {}".format(" ".join([str(id) for id in sequence])))
     return np.array(sequence)
 
 

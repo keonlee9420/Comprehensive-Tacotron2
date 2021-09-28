@@ -40,7 +40,7 @@ class Dataset(Dataset):
             "text",
             "{}-text-{}.npy".format(speaker, basename),
         )
-        phone = np.load(phone_path)
+        text = np.load(phone_path)
         mel_path = os.path.join(
             self.preprocessed_path,
             "mel",
@@ -56,7 +56,7 @@ class Dataset(Dataset):
         sample = {
             "id": basename,
             "speaker": speaker_id,
-            "text": phone,
+            "text": text,
             "raw_text": raw_text,
             "mel": mel,
             "spker_embed": spker_embed,
@@ -174,14 +174,14 @@ class TextDataset(Dataset):
             "text",
             "{}-text-{}.npy".format(speaker, basename),
         )
-        phone = np.load(phone_path)
+        text = np.load(phone_path)
         spker_embed = np.load(os.path.join(
             self.preprocessed_path,
             "spker_embed",
             "{}-spker_embed.npy".format(speaker),
         )) if self.load_spker_embed else None
 
-        return (basename, speaker_id, phone, raw_text, spker_embed)
+        return (basename, speaker_id, text, raw_text, spker_embed)
 
     def process_meta(self, filename):
         with open(filename, "r", encoding="utf-8") as f:
