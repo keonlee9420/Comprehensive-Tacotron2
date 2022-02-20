@@ -46,9 +46,21 @@ class Preprocessor:
             config["preprocessing"]["mel"]["mel_fmin"],
             config["preprocessing"]["mel"]["mel_fmax"],
         )
+        self.val_prior = self.val_prior_names(os.path.join(self.out_dir, "val.txt"))
         self.speaker_emb = None
         if config["preprocessing"]["speaker_embedder"] != "none":
             self.speaker_emb = PreDefinedEmbedder(config)
+
+    def val_prior_names(self, val_prior_path):
+        val_prior_names = set()
+        if os.path.isfile(val_prior_path):
+            print("Load pre-defined validation set...")
+            with open(val_prior_path, "r", encoding="utf-8") as f:
+                for m in f.readlines():
+                    val_prior_names.add(m.split("|")[0])
+            return list(val_prior_names)
+        else:
+            return None
 
     def _init_spker_embeds(self, spkers):
         spker_embeds = dict()
@@ -101,10 +113,16 @@ class Preprocessor:
                     info, n, m_min, m_max, spker_embed = ret
                 # out.append(info)
 
-                if i == 0 or i == 1: 
-                    val.append(info)
+                if self.val_prior is not None:
+                    if basename not in self.val_prior:
+                        train.append(info)
+                    else:
+                        val.append(info)
                 else:
-                    train.append(info)
+                    if i == 0 or i == 1: 
+                        val.append(info)
+                    else:
+                        train.append(info)
 
                 if self.speaker_emb is not None:
                     spker_embeds[speaker].append(spker_embed)
@@ -152,16 +170,16 @@ class Preprocessor:
 
         # random.shuffle(out)
         # out = [r for r in out if r is not None]
+        if self.val_prior is None:
+            random.shuffle(train)
         train = [r for r in train if r is not None]
         val = [r for r in val if r is not None]
 
         # Write metadata
         with open(os.path.join(self.out_dir, "train.txt"), "w", encoding="utf-8") as f:
-            # for m in out[self.val_size :]:
             for m in train:
                 f.write(m + "\n")
         with open(os.path.join(self.out_dir, "val.txt"), "w", encoding="utf-8") as f:
-            # for m in out[: self.val_size]:
             for m in val:
                 f.write(m + "\n")
 

@@ -1,7 +1,7 @@
 dataset: "VCTK"
 
 path:
-  corpus_path: "/mnt/nfs2/speech-datasets/en/VCTK-Corpus-92"
+  corpus_path: "/mnt/nfs2/speech-datasets/en/VCTK-Corpus-0.92"
   wav_tag: "mic1"
   wav_dir: "wav48_silence_trimmed"
   txt_dir: "txt"

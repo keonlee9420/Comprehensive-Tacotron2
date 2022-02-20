@@ -207,7 +207,8 @@ def infer_one_sample(targets, predictions, vocoder, mel_stats, model_config, pre
         attention=True,
     )
     plt.savefig(os.path.join(
-        path, str(args.restore_step), "{}_{}.png".format(basename, args.speaker_id) if multi_speaker else "{}.png".format(basename)))
+        path, str(args.restore_step), "{}_{}.png".format(basename, args.speaker_id)\
+             if multi_speaker and args.mode == "single" else "{}.png".format(basename)))
     plt.close()
 
     from .model import vocoder_infer
@@ -219,7 +220,8 @@ def infer_one_sample(targets, predictions, vocoder, mel_stats, model_config, pre
 
     sampling_rate = preprocess_config["preprocessing"]["audio"]["sampling_rate"]
     wavfile.write(os.path.join(
-        path, str(args.restore_step), "{}_{}.wav".format(basename, args.speaker_id) if multi_speaker else "{}.wav".format(basename)),
+        path, str(args.restore_step), "{}_{}.wav".format(basename, args.speaker_id)\
+             if multi_speaker and args.mode == "single" else "{}.wav".format(basename)),
         sampling_rate, wav_predictions[0])
 
 

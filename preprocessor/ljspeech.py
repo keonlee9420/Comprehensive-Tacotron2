@@ -40,6 +40,18 @@ class Preprocessor:
             config["preprocessing"]["mel"]["mel_fmin"],
             config["preprocessing"]["mel"]["mel_fmax"],
         )
+        self.val_prior = self.val_prior_names(os.path.join(self.out_dir, "val.txt"))
+
+    def val_prior_names(self, val_prior_path):
+        val_prior_names = set()
+        if os.path.isfile(val_prior_path):
+            print("Load pre-defined validation set...")
+            with open(val_prior_path, "r", encoding="utf-8") as f:
+                for m in f.readlines():
+                    val_prior_names.add(m.split("|")[0])
+            return list(val_prior_names)
+        else:
+            return None
 
     def build_from_path(self):
         os.makedirs((os.path.join(self.out_dir, "text")), exist_ok=True)
@@ -47,6 +59,8 @@ class Preprocessor:
 
         print("Processing Data ...")
         out = list()
+        train = list()
+        val = list()
         n_frames = 0
         mel_min = float('inf')
         mel_max = -float('inf')
@@ -65,7 +79,14 @@ class Preprocessor:
                     continue
                 else:
                     info, n, m_min, m_max = ret
-                out.append(info)
+
+                if self.val_prior is not None:
+                    if basename not in self.val_prior:
+                        train.append(info)
+                    else:
+                        val.append(info)
+                else:
+                    out.append(info)
 
                 if mel_min > m_min:
                     mel_min = m_min
@@ -93,15 +114,24 @@ class Preprocessor:
             )
         )
 
-        random.shuffle(out)
-        out = [r for r in out if r is not None]
+        if self.val_prior is not None:
+            assert len(out) == 0
+            random.shuffle(train)
+            train = [r for r in train if r is not None]
+            val = [r for r in val if r is not None]
+        else:
+            assert len(train) == 0 and len(val) == 0
+            random.shuffle(out)
+            out = [r for r in out if r is not None]
+            train = out[self.val_size :]
+            val = out[: self.val_size]
 
         # Write metadata
         with open(os.path.join(self.out_dir, "train.txt"), "w", encoding="utf-8") as f:
-            for m in out[self.val_size :]:
+            for m in train:
                 f.write(m + "\n")
         with open(os.path.join(self.out_dir, "val.txt"), "w", encoding="utf-8") as f:
-            for m in out[: self.val_size]:
+            for m in val:
                 f.write(m + "\n")
 
         return out
