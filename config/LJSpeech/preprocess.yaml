@@ -1,7 +1,7 @@
 dataset: "LJSpeech"
 
 path:
-  corpus_path: "/mnt/nfs2/speech-datasets/en/LJSpeech-1.1"
+  corpus_path: "/kaggle/input/the-lj-speech-dataset/LJSpeech-1.1"
   preprocessed_path: "./preprocessed_data/LJSpeech"
 
 preprocessing:
